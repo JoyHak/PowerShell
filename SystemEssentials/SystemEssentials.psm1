@@ -342,7 +342,7 @@ function Out-VerboseTee {
 
 .DESCRIPTION
     This function is designed to display groups or "pages" of objects to the PowerShell 
-    pipeline. It is modeled after the legacy More.com command-line utility. By default, 
+    pipeline. It is modeled after the legacy `more` command-line utility. By default, 
     the command will write objects out to the pipeline in groups of 50. You will be 
     prompted after each grouping.
 
@@ -389,7 +389,7 @@ function Out-VerboseTee {
     Display processes in groups of 10.
 
 .EXAMPLE
-    PS C:\> dir c:\work -file -Recurse | Out-More -ClearScreen | tee -Variable work
+    PS C:\> dir c:\work -file -Recurse | more -ClearScreen | log -Variable work
     List all files in C:\Work and page them to Out-More using the default count, 
     but after clearing the screen first. The results are then piped to Tee-Object 
     which saves them to a variable.
@@ -1286,13 +1286,6 @@ function Stop-HiddenScript {
 
     The function outputs a formatted table of terminated processes showing Id and
     ProcessName, along with status messages indicating success or failure.
-
-.NOTES
-    Requirements:
-    - es.exe (Everything search tool) for additional search method.
-    - Administrative privileges may be required for some processes.
-
-    See Stop-HiddenScript for multiple scripts termination without specifying launcher.
 
 .EXAMPLE
     Stop-Script "Script1", "Script2"
