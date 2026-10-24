@@ -291,7 +291,7 @@ You can specify full or relative paths to the scripts or just filenames to find 
 >
 > Requires [es.exe](https://www.voidtools.com/support/everything/command_line_interface/) to be in Path variable. After installation launch `Everything.exe` and wait until creates full disk index. It's requried for the fast-kill.
 >
-> You can add it to the Path by Add-EnvPath (doesn't requires restart).
+> You can add it to the Path by [Add-EnvPath](https://github.com/JoyHak/PowerShell/tree/main/Environment.Path#add-envpath) (doesn't requires restart).
 
 <details>
   <summary>Example output</summary>
