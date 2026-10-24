@@ -22,6 +22,9 @@ Backup and restore the system from terminal.
 > **Administrator privileges required** for all restore point management functions.
 > But you can safely call `checkpoints` and `restore` without them.
 
+
+<img src="../Images/restore.avif" width="550" />
+
 ---
 
 ### Get-Checkpoint
