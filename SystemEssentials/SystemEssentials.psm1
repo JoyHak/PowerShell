@@ -507,6 +507,58 @@ function Out-More {
 
 <#
 .SYNOPSIS
+    Escapes arguments.
+
+.DESCRIPTION
+    Converts list of arguments (array of strings) to properly escaped string of arguments.
+
+.PARAMETER Argument
+    Array of stings with arguments values
+#>
+function ConvertTo-EscapedArguments {
+    [CmdletBinding()]
+    [Alias('escape')]
+    
+    param (
+        [Parameter(Mandatory, ValueFromPipeline)]
+        [Alias('arg')]
+        [string[]]$argument
+    )
+    
+    begin {
+        $escapedArgs = [System.Collections.Generic.List[string]]@()
+    }
+
+    process {
+        foreach ($arg in $argument) {
+            <# 
+            stdlib Rules: 
+            2N backslashes + " ==> N backslashes and begin/end quote
+            2N+1 backslashes + " ==> N backslashes + literal " 
+            N backslashes ==> N backslashes
+            
+            https://docs.microsoft.com/en-gb/windows/desktop/api/shellapi/nf-shellapi-commandlinetoargvw
+            https://stackoverflow.com/questions/21314633/how-do-i-pass-a-literal-double-quote-from-powershell-to-a-native-command
+            #>
+            # escaping double quotes as we use them to indicate start/end of argument
+            $arg = $arg.Replace('"', '\"')
+
+            # double all the slashes followed by \" 
+            # (no more org before quote, so quote is never end/begin arg char)
+            $arg = $arg -replace '(\\+)\\\"', '$1$1\"'
+
+            # double all the slashes at the end of the argument
+            $arg = $arg -replace '(\\+)$', '$1$1'
+
+            # wrapping argument
+            $escapedArgs.Add("`"$arg`"")
+        }
+        return ($escapedArgs -join ' ')
+    }
+}
+
+<#
+.SYNOPSIS
     Retrieves help information for PowerShell commands or external applications.
 
 .DESCRIPTION
@@ -515,40 +567,20 @@ function Out-More {
     (--help, -h, /?, etc.), eliminating the need to remember application-specific help syntax.
 
 .PARAMETER command
-    The name of the Cmdlet, Function, Alias, full or relative path to the application or app name from PATH enviromental variable.
-    Use Get-EnvPath to retrieve full path for application from PATH variable.
-
-    Type: String
-    Parameter Sets: (All)
-    Aliases:
-
-    Required: True
-    Position: 0
-    Default value: None
-    Accept pipeline input: True (ByValue)
-    Accept wildcard characters: False
+    The name of the Cmdlet, Function, Alias, full or relative path to the application 
+    or app name from PATH enviromental variable.
 
 .PARAMETER arguments
-    Arguments or sub-commands to pass to the command. If $command is PowerShell command (Cmdlet, Function, Alias), pass arguments for Get-Help command that will be used to retrieve help message or specific details about this $command.
-
-    Type: String[]
-    Parameter Sets: (All)
-    Aliases:
-
-    Required: False
-    Position: 1
-    Default value: None
-    Accept pipeline input: False
-    Accept wildcard characters: False
+    Arguments or sub-commands to pass to the command. If command is PowerShell command 
+    (Cmdlet, Function, Alias), pass arguments for Get-Help command that will be used to 
+    retrieve help message or specific details about this command.
 
 .INPUTS
     System.String
-
-    You can pipe name or path to this function.
+    You can pipe file name or path to this function.
 
 .OUTPUTS
     System.String
-
     Returns the help text for the command or application.
 
 .EXAMPLE
@@ -569,30 +601,12 @@ function Out-More {
 
     Description:
     Retrieves help for the 'install' sub-command of Python package manager.
-
+    
 .EXAMPLE
-    hlp taskkill.exe
+    Get-HelpMessage "C:\Program Files\Git\cmd\git.exe"
 
     Description:
-    Retrieves help information for the system32 taskkill.exe.exe application.
-
-.EXAMPLE
-    hlp ./git.exe
-
-    Description:
-    Retrieves help information for the git.exe in the current directory using 'hlp' alias.
-
-.EXAMPLE
-    hlp "C:\Program Files\Git\cmd\git.exe"
-
-    Description:
-    Retrieves help information for the git.exe using 'hlp' alias.
-
-.EXAMPLE
-    Get-EnvPath "cmder" | ForEach { Get-HelpMessage $_ }
-
-    Description:
-    Retrieves help information for all matching paths from PATH variable.
+    Retrieves help information for the git VCS.
 
 .EXAMPLE
     Get-HelpMessage Stop-HiddenScript -Parameter launcher
@@ -600,67 +614,75 @@ function Out-More {
     Description:
     Retrieves detailed information about 'launcher' param.
 
-.NOTES
-    Requires Invoke-ExternalCommand for executing external applications and suppressing errors.
-    https://github.com/choovick/ps-invoke-externalcommand
-
 .LINK
     Get-Help
 
 .LINK
     Get-Command
-
-.LINK
-    Invoke-ExternalCommand
-
-.LINK
-    Get-EnvPath
 #>
 function Get-HelpMessage {
-    [cmdletbinding()]
-    [alias('hlp', 'h')]
+    [CmdletBinding()]
+    [Alias('hlp', 'h')]
 
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
         [string]$command,
 
         [Parameter(ValueFromRemainingArguments)]
-        [string[]]$arguments
+        [string[]]$arguments = @()
     )
 
     begin {
         [string[]]$helpParams = @('--help', '-help', 'help', '-h', '--h', '-?', '/help', '/h', '/?')
-        [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+        # [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
     }
 
     process {
-        if ((Test-Path $command) -or
-            (Get-Command $command -CommandType Application -ErrorAction Ignore)) {
+        $commandObj = Get-Command $command -CommandType Application -ErrorAction Ignore |
+            Select-Object -First 1
+        
+        if ($commandObj -or (Test-Path $command)) {
+            # Pass help arguments one by one.
+            # Pass additional args if needed.
+            $params = $arguments.count ? (ConvertTo-EscapedArguments $arguments) : ''
+            
+            # Prepare process launch
+            $proc = New-Object System.Diagnostics.Process
+            $proc.StartInfo = [System.Diagnostics.ProcessStartInfo]@{
+                FileName = $commandObj.source   # Full path to the binary
+                # StandardOutputEncoding = [System.Text.Encoding]::UTF8
+                # StandardErrorEncoding  = [System.Text.Encoding]::UTF8
+                RedirectStandardError  = $true
+                RedirectStandardOutput = $true
+                UseShellExecute        = $false  # no visible shell
+                WorkingDirectory       = (Get-Location).path 
+            }
+            
             ForEach ($help in $helpParams) {
-                $params = $arguments ? @($arguments, $help) : @($help)
-                $cmd = Invoke-ExternalCommand $command $params `
-                    -OutVarStdout output `
-                    -HideStdout -HideStdErr -HideCommand `
-                    -IgnoreExitCode -Return
+                $proc.StartInfo.Arguments = "$params $help"
+                $proc.Start() | Out-Null
+                
+                $output = $proc.StandardOutput.ReadToEnd()
+                $proc.WaitForExit()
 
-                if (!$cmd.Code) {
-                    return $cmd.StdOut
+                if (!$proc.ExitCode) {
+                    return $output
                 }
             }
         }
-        
+
         if (!$arguments.Count) {
             return (Get-Help $command)
         }
-        
+
         # Parse arguments for Get-Help
         $params = @{}
-        $i = 0;        
+        $i = 0;
         while ($i -lt $arguments.Count) {
             $key = $arguments[$i].Trim('-/" ')
             $val = $arguments[$i + 1]
-            
-            if ($val -and $val -notmatch '^[/-]') { 
+
+            if ($val -and $val -notmatch '^[/-]') {
                 # Next value is not a switch or named param
                 $params[$key] = $val
                 $i += 2
@@ -668,9 +690,9 @@ function Get-HelpMessage {
                 # No value provided, assume it's a switch
                 $params[$key] = $true
                 $i++
-            }            
+            }
         }
-        
+
         Get-Help $command @params
     }
 }
