@@ -110,7 +110,7 @@ Make `git` available for all users:
 Find-EnvPath git -scope User | Add-EnvExe -scope Machine
 ```
 
-<img src="../Images/addpath.webp" width="450" />
+<img src="../Images/addpath.webp" width="550" />
 
 </details>
 
@@ -145,7 +145,7 @@ Remove-EnvPath -Path .\Microsoft\WindowsApps -Scope Session
 Find-EnvPath git, gitbutler, but | Split-Path -Parent | Remove-EnvPath
 ```
 
-<img src="../Images/rempath.webp" width="400" />
+<img src="../Images/rempath.webp" width="550" />
 
 </details>
 
@@ -175,7 +175,7 @@ Repair-EnvPath -scope Machine -exists
 Repair-EnvPath -scope Session -folders
 ```
 
-<img src="../Images/Repair-EnvPath.webp" width="350" />
+<img src="../Images/Repair-EnvPath.webp" width="550" />
 
 </details>
 
@@ -229,9 +229,9 @@ C:\Windows\System32\Wbem
 . . .
 ```
 
-</details>
+<img src="../Images/path.webp" width="550" />
 
-<img src="../Images/path.webp" width="350" />
+</details>
 
 ### Find-EnvPath
 
@@ -292,10 +292,11 @@ Remove all paths to VCS applications:
 Find-EnvPath git, gitbutler, but | Split-Path -Parent | Remove-EnvPath
 ```
 
-</details>
+<img src="../Images/findfile.webp" width="450" />
+<br/>
+<img src="../Images/findfile2.webp" width="450" />
 
-<img src="../Images/findfile.webp" width="350" />
-<img src="../Images/findfile2.webp" width="350" />
+</details>
 
 ## Utilities
 
