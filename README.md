@@ -1,3 +1,16 @@
+<div align="center"> 
+<a href="#installation">
+	<img src="Icons/banner.png" alt="Essentials for your terminal">
+</a>
+<a href="https://www.powershellgallery.com/profiles/Rafaello">
+	<img src="https://img.shields.io/github/v/release/JoyHak/PowerShell?display_name=tag&style=flat&label=PsGallery&logo=termius&color=8293e6" alt="PsGallery">
+</a>
+<a href="https://github.com/JoyHak/PowerShell/releases/latest">
+	<img src="https://img.shields.io/github/downloads/Joyhak/PowerShell/total?style=flat&color=8293e6&logo=AB%20download%20manager" alt="Downloads">
+</a>
+</div>
+<br>
+
 This collection of functions is designed to simplify the completion of basic tasks without relying on slow Windows UI. It can help you to learn PowerShell: retrieve information about commands and CLI utilities using the [Get-Help*](/SystemEssentials/README.md#help--documentation) set of cmdlets. By studying the source code, you'll also gain a better understanding of what PowerShell is truly capable of. And the [Write-*](/SystemEssentials/README.md#logging--output) cmdlets will help you write scripts with greater ease.
 
 # Contents
@@ -84,5 +97,3 @@ Get-InstalledModule `
     select -expand InstalledLocation | 
     Remove-Item -force -recurse
 ```
-
-

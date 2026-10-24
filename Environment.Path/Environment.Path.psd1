@@ -7,6 +7,7 @@ CompanyName             =  'ToYu studio'
 Copyright               =  'GNU General Public License v3.0'
 Description             =  'A collection of functions to manipulate and retrieve PATH environment variable.'
 HelpInfoURI             = 'https://github.com/JoyHak/PowerShell/tree/main/Environment.Path#readme'
+GUID                    = 'e949da3f-0a3a-486b-90e0-968801edcf16'
 PrivateData = @{
     PSData = @{
         Tags = 'path', 'env', 'environment', 'add-path', 'remove-path'

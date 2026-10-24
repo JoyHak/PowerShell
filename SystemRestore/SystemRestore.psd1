@@ -7,6 +7,7 @@ CompanyName             =  'ToYu studio'
 Copyright               =  'GNU General Public License v3.0'
 Description             =  'Backup and restore the system from terminal.'
 HelpInfoURI             = 'https://github.com/JoyHak/PowerShell/tree/main/SystemRestore#readme'
+GUID                    = 'ee8c9326-7fe4-4409-a051-bdd97680e3c4'
 PrivateData = @{
     PSData = @{
         Tags = @('checkpoint', 'restore', 'backup', 'restorepoint')

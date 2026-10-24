@@ -7,6 +7,7 @@ CompanyName             =  'ToYu studio'
 Copyright               =  'GNU General Public License v3.0'
 Description             =  'A collection of functions to manipulate and retrieve PATH environment variable.'
 HelpInfoURI             = 'https://github.com/JoyHak/PowerShell/tree/main/SystemEssentials#readme'
+GUID                    = '3212a53b-1827-4cb0-8381-f138aad73e5e'
 PrivateData = @{
     PSData = @{
         Tags = @('winver', 'stop', 'script', 'scripts', 'message', 'help', 'usage', 'examples', 'more', 'learning', 'util', 'utility', 'utilities', 'windows')
