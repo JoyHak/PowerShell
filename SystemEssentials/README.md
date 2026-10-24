@@ -2,8 +2,6 @@
 
 Designed to simplify essential tasks.
 
----
-
 ## Table of Contents
 
 - [Help & Documentation](#help--documentation)
@@ -72,9 +70,9 @@ Remove-Checkpoint
 
 </details>
 
-<br><br>[Script Management](#script-management) is designed to stop hanging or hidden scripts (like Python, Autohotkey, anything you have).  To manage you scripts (launch, stop, auto-startup, etc.) see [Launcher](https://github.com/JoyHak/Launcher) utility.
+[Script Management](#script-management) is designed to stop hanging or hidden scripts (like Python, Autohotkey, anything you have).  To manage you scripts (launch, stop, auto-startup, etc.) see [Launcher](https://github.com/JoyHak/Launcher) utility.
 
-<br><br>Other functions make it easier to perform essential tasks and write scripts.
+Other functions make it easier to perform essential tasks and write scripts.
 
 ---
 
@@ -148,7 +146,7 @@ hlp .\notepad++.exe
 > ? gh repo clone
 > ```
 >
-> <img src="../images/Get-HelpMessage.avif" width="450" />
+> <img src="../Images/Get-HelpMessage.avif" width="450" />
 
 ### Get-HelpSyntax
 
@@ -263,7 +261,7 @@ Stop-Script "Script1", "Script2" -confirm
 kills -names "Script1.py", "Script2.py" -launcher "python" -force
 ```
 
-<img src="../images/Stop-Script.webp" width="850" />
+<img src="../Images/Stop-Script.webp" width="850" />
 
 </details>
 
@@ -284,7 +282,7 @@ You can specify full or relative paths to the scripts or just filenames to find 
 
 > [!NOTE]
 >
-> Requires and [es.exe](https://www.voidtools.com/support/everything/command_line_interface/) to be in Path variable. After installation launch `Everything.exe` and wait until creates full disk index. It's requried for the fast-kill.
+> Requires [es.exe](https://www.voidtools.com/support/everything/command_line_interface/) to be in Path variable. After installation launch `Everything.exe` and wait until creates full disk index. It's requried for the fast-kill.
 >
 > You can add it to the Path by Add-EnvPath (doesn't requires restart).
 
@@ -309,7 +307,7 @@ With handler filter:
 Stop-HiddenScript -names "Script1.py", "Script2.py" -launcher "python" -force
 ```
 
-<img src="../images/Stop-HiddenScript.avif" width="450" />
+<img src="../Images/Stop-HiddenScript.avif" width="450" />
 
 </details>
 
@@ -327,7 +325,7 @@ Outputs a message to the console and writes it to a log file. Automatically crea
 
 This command is designed for simple messages logging. It doesn't requires multiple parameters per each call, only the message.
 
-If a path to a file to write to was not specified, it will be created automatically with the current date in . format and all subsequent calls to Write-Log will write messages to this file.
+If a path to a file to write to was not specified, it will be created automatically with the current date as filename. All subsequent calls to `Write-Log` will write messages to this file.
 
 #### Levels and colors
 
@@ -376,7 +374,8 @@ Write-Log 'Locked file' 'Warning'  <-- writes to warns.log
 
 > [!TIP]
 > Install [Maple Mono font](https://github.com/subframe7536/maple-font) to see pretty prefix.
-> <img src="../images/Write-Log.avif" width="450" />  
+> 
+> <img src="../Images/Write-Log.avif" width="450" />  
 
 ### Write-Detail
 
@@ -520,7 +519,7 @@ Converts an array of argument strings into a properly escaped string for passing
 <details>
   <summary>Examples</summary>
 
-```powershell
+```js
 PS C:\> ConvertTo-EscapedArguments "file with spaces.txt", "--option=value"
 "file with spaces.txt" "--option=value"
   
@@ -532,15 +531,15 @@ PS C:\> ConvertTo-EscapedArguments '"file\with spaces.txt"'
 
 ### Get-Error
 
-Retrieves error descriptions by code via `certutil` or `slui`.
+Retrieves error descriptions from error code.
 
 | Parameter | Required | Type   | Description                                      |
 | --------- | -------- | ------ | ------------------------------------------------ |
-| `code`    | Yes      | string | Error code (e.g., `0xc0000602`, pipeline-able)   |
+| `code`    | Yes      | string | Error code   |
 | `UI`      | No       | switch | Show a Windows dialog with the error description |
 
 <details>
-  <summary>Example output</summary>
+  <summary>Examples</summary>
 
 ```powershell
 PS C:\> Get-Error 0x80070005
@@ -617,7 +616,7 @@ Returns detailed information about the current Windows version as an object:
 | InstalledUTC   | DateTime | Installation date (UTC)              |
 | Computername   | string   | Computer name                        |
 
-<img src="../images/winver.webp" width="850" />
+<img src="../Images/winver.webp" width="850" />
 
 ### Get-WindowsVersionString
 
@@ -686,4 +685,4 @@ checkpoints Get-Checkpoint                        SystemEssentials
 
 ## License
 
-[GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html)
+[GNU General Public License v3.0](../LICENSE)

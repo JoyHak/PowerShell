@@ -17,8 +17,7 @@ Manipulate and retrieve `Path` environment variable.
   - [Set-EnvironmentVariable](#set-environmentvariable)
 - [Aliases](#aliases)
 
-<br><br>
-Adding a path to this variable allows you to call any file by its name without having to specify the full path:
+<br>Adding a path to this variable allows you to call any file by its name without having to specify the full path:
 
 - Run any script or executable via PowerShell:
 
@@ -56,17 +55,18 @@ This module solves some issues related to managing variable and provides new cap
 
 All functions operate on a variable within one of the available scopes:
 
-| Scope          | Description                                                                                                                                 |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| Session        | Affects only the current session. All **added** paths are cleared after pwsh is restarted. The paths are not accessible to other processes. |
-| User (default) | Paths available for current user: scripts, apps, launched by current user.                                                                  |
-| Machine        | System-wide paths (may require elevation)                                                                                                   |
+| Scope          | Description                                                                |
+| -------------- | -------------------------------------------------------------------------- |
+| Session        | Affects only the current session.                                          |
+| User (default) | Paths available for current user: scripts, apps, launched by current user. |
+| Machine        | System-wide paths (may require elevation)                                  |
 
-The current *session* scope is always updated immediately. E.g. the added path becomes available for use immediately.
+The current *session* scope is always updated immediately. E.g. the added path becomes available for use immediately. But all **added** paths to the *session* `Path` are cleared after pwsh is restarted and they are not accessible to other processes!
 
 ### Add-EnvPath
 
 *Alias: `addpath`*
+
 Adds a folder to the selected scope. Resolves the provided path, normalizes it, and appends it to the variable if it does not already exist. The current session is updated immediately.
 
 | Parameter       | Required | Type     | Description               |
@@ -80,27 +80,44 @@ Adds a folder to the selected scope. Resolves the provided path, normalizes it, 
 <details>
   <summary>Examples</summary>
 
+Add relative path for current user:
 ```powershell
-# Add to current user's PATH
-Add-EnvPath C:\Users\ToYu\ripgrep
-
-# Add relative path to current session only
-Add-EnvPath -Path .\Microsoft\WindowsApps -Scope Session
-
-# Add to machine-wide PATH (requires elevation)
-Add-EnvPath -Path C:\Users\ToYu\Notepad++ -Scope Machine
-
-# Chain with Find-EnvPath to make git available for all users
-Find-EnvPath git -Scope User | Add-EnvExe -Scope Machine
+PS C:\> Set-Location ~
+PS C:\Users\ToYu\> addpath ".\Notepad++"
+C:\Users\ToYu\Notepad++
+```
+Cleanup and add for current user:
+```powershell
+PS C:\Users\ToYu\> addpath '"Notepad++\"'
+C:\Users\ToYu\Notepad++  
+```
+Add any path, even if doesn't exist yet:
+```powershell
+PS C:\> addpath "C:\This\Folder\Does\Not\Exist"
+"C:\This\Folder\Does\Not\Exist"
+```
+Preserves variables:
+```powershell
+PS C:\> addpath %windir%\System32
+%windir%\System32
+```
+Add machine-wide path:
+```powershell
+addpath C:\Users\ToYu\Notepad++ -scope Machine
+```
+Make `git` available for all users:
+```powershell
+Find-EnvPath git -scope User | Add-EnvExe -scope Machine
 ```
 
-<img src="../images/addpath.webp" width="450" />
+<img src="../Images/addpath.webp" width="450" />
 
 </details>
 
 ### Remove-EnvPath
 
 *Alias: `rempath`*
+
 Removes a folder from the selected scope. Resolves the provided path and removes all matching entries. If the path is not present, the function returns nothing without changing the variable.
 
 | Parameter       | Required | Type     | Description                           |
@@ -128,7 +145,7 @@ Remove-EnvPath -Path .\Microsoft\WindowsApps -Scope Session
 Find-EnvPath git, gitbutler, but | Split-Path -Parent | Remove-EnvPath
 ```
 
-<img src="../images/rempath.webp" width="400" />
+<img src="../Images/rempath.webp" width="400" />
 
 </details>
 
@@ -158,7 +175,7 @@ Repair-EnvPath -scope Machine -exists
 Repair-EnvPath -scope Session -folders
 ```
 
-<img src="../images/Repair-EnvPath.webp" width="350" />
+<img src="../Images/Repair-EnvPath.webp" width="350" />
 
 </details>
 
@@ -169,8 +186,6 @@ Repair-EnvPath -scope Session -folders
 *Aliases: `path`, `finddir`, `findfolder`*
 
 Gets matching paths from the variable. Returns any occurrence of the searched directory name or path.
-
-> **Note:** Unlike other functions in this module, the path must exist on disk. Otherwise it returns an empty array.
 
 | Parameter       | Required | Type     | Description                                         |
 | --------------- | -------- | -------- | --------------------------------------------------- |
@@ -216,7 +231,7 @@ C:\Windows\System32\Wbem
 
 </details>
 
-<img src="../images/path.webp" width="350" />
+<img src="../Images/path.webp" width="350" />
 
 ### Find-EnvPath
 
@@ -279,8 +294,8 @@ Find-EnvPath git, gitbutler, but | Split-Path -Parent | Remove-EnvPath
 
 </details>
 
-<img src="../images/findfile.webp" width="350" />
-<img src="../images/findfile2.webp" width="350" />
+<img src="../Images/findfile.webp" width="350" />
+<img src="../Images/findfile2.webp" width="350" />
 
 ## Utilities
 
@@ -297,27 +312,46 @@ Normalizes a path string for safe use in PATH entries. Trims whitespace, resolve
 <details>
   <summary>Examples</summary>
 
+Convert relative path to absolute:
 ```powershell
-# Convert relative path to absolute
-Resolve-EnvPath ".\tools\bin"
-
-# Remove trailing backslash
-Resolve-EnvPath "C:\Tools\bin\"
-
-# Works even if path does not exist
-Resolve-EnvPath "C:\This\Folder\Does\Not\Exist"
+PS C:\> Set-Location ~
+PS C:\Users\ToYu\> Resolve-EnvPath ".\Notepad++"
+C:\Users\ToYu\Notepad++
 ```
+Cleanup:
+```powershell
+PS C:\Users\ToYu\> Resolve-EnvPath '"Notepad++\"'
+C:\Users\ToYu\Notepad++  
+```
+Works even if path does not exist:
+```powershell
+PS C:\> Resolve-EnvPath "C:\This\Folder\Does\Not\Exist"
+"C:\This\Folder\Does\Not\Exist"
+```
+Preserves variables:
+```powershell
+PS C:\> Resolve-EnvPath %windir%\System32
+%windir%\System32
+```
+
+> [!CAUTION]
+> If variable doesn't exists or empty, this may cause undefined behavior in the future.
+> Use PowerShell notation if you need to expand variable immediately: 
+> ```powershell
+> PS C:\> Resolve-EnvPath "$env:WinDir\System32"
+> C:\Windows\System32
+> ```
 
 </details>
 
 ### Set-EnvironmentVariable
 
-Sets an environment variable in the selected scope. Writes the variable to either the current session, the current user profile, or the machine-wide environment. If the value is empty, the variable is removed.
+Sets an environment variable in the selected scope.
 
 | Parameter       | Required | Type   | Description                                                                                |
 | --------------- | -------- | ------ | ------------------------------------------------------------------------------------------ |
 | `name`          | Yes      | string | Name of the environment variable to set or remove                                          |
-| `value`         | No       | object | Value to assign. Use explicit empty string to remove the variable (accepts pipeline input) |
+| `value`         | No       | object | Value to assign. Use explicit empty string to remove the variable |
 | [scope](#scope) | No       | string | Scope to update in (default: `User`)                                                       |
 
 > [!NOTE]

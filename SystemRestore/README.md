@@ -2,8 +2,6 @@
 
 Backup and restore the system from terminal.
 
----
-
 ## Table of Contents
 
 - [Get-Checkpoint](#get-checkpoint)
@@ -22,6 +20,7 @@ Backup and restore the system from terminal.
 ### Get-Checkpoint
 
 *Alias: `checkpoints`*
+
 Retrieves Windows system restore points in a user-friendly format. Sorted by ID descending (newest first).
 
 | Parameter      | Required | Type     | Description                                                     |
@@ -58,6 +57,7 @@ checkpoints | Select -First 5
 ### Checkpoint-Computer
 
 *Alias: `checkpoint`*
+
 [Creates a system restore point on the local computer.](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/checkpoint-computer?view=powershell-5.1) (PowerShell built-in).
 
 | Parameter          | Required | Type   | Description                             |
@@ -84,7 +84,7 @@ Checkpoint-Computer -Description "ChangeNetSettings" -RestorePointType MODIFY_SE
 
 ### restore
 
-Restores the system to a previous restore point. If no point is specified, opens an interactive selection window.
+Restores the system to a previous restore point. If no point is specified, show an interactive TUI.
 
 | Parameter      | Required | Type   | Description                                                              |
 | -------------- | -------- | ------ | ------------------------------------------------------------------------ |
@@ -128,7 +128,7 @@ Resize-Checkpoint 5GB
 
 ### Remove-Checkpoint
 
-Deletes specified restore points by their sequence numbers. If no point is specified, opens an interactive selection window.
+Deletes specified restore points by their sequence numbers. If no point is specified, opens an interactive selection TUI.
 
 | Parameter        | Required | Type   | Description                                                                                 |
 | ---------------- | -------- | ------ | ------------------------------------------------------------------------------------------- |
@@ -165,12 +165,12 @@ checkpoints | Where-Object {$_.Description -like '*Update*'} | Remove-Checkpoint
 
 ## Dependencies
 
-| Module                                 | Purpose                                               |
-| -------------------------------------- | ----------------------------------------------------- |
-| `Microsoft.PowerShell.ConsoleGuiTools` | Interactive selection windows (`Out-ConsoleGridView`) |
+| Module                                 | Purpose                                           |
+| -------------------------------------- | ------------------------------------------------- |
+| `Microsoft.PowerShell.ConsoleGuiTools` | Interactive selection TUI (`Out-ConsoleGridView`) |
 
 ---
 
 ## License
 
-[GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html)
+[GNU General Public License v3.0](../LICENSE)

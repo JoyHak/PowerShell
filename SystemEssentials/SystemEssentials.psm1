@@ -144,7 +144,7 @@ function Write-Detail {
     It doesn't requires multiple parameters per each call, only the message.
 
     If a path to a file to write to was not specified, it will be created 
-    automatically with the current date in .log format and all subsequent 
+    automatically with the current date as a name. All subsequent 
     calls to Write-Log will write messages to this file.
 
 .NOTES
