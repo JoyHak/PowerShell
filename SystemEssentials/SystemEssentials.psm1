@@ -584,32 +584,32 @@ function ConvertTo-EscapedArguments {
     Returns the help text for the command or application.
 
 .EXAMPLE
-    Get-HelpMessage Get-Process
+    hlp Get-Process
 
     Description:
     Retrieves help for the built-in PowerShell command Get-Process.
     Equivalent to running Get-Help Get-Process.
 
 .EXAMPLE
-    Get-HelpMessage pip
+    hlp pip
 
     Description:
     Retrieves commands for the Python package manager.
 
 .EXAMPLE
-    Get-HelpMessage pip install
+    hlp pip install
 
     Description:
     Retrieves help for the 'install' sub-command of Python package manager.
     
 .EXAMPLE
-    Get-HelpMessage "C:\Program Files\Git\cmd\git.exe"
+    hlp "C:\Program Files\Git\cmd\git.exe"
 
     Description:
     Retrieves help information for the git VCS.
 
 .EXAMPLE
-    Get-HelpMessage Stop-HiddenScript -Parameter launcher
+    hlp Stop-HiddenScript -Parameter launcher
 
     Description:
     Retrieves detailed information about 'launcher' param.
@@ -669,8 +669,11 @@ function Get-HelpMessage {
                     return $output
                 }
             }
+            
+            Write-Error ($proc.StandardError.ReadToEnd())
+            return
         }
-
+        
         if (!$arguments.Count) {
             return (Get-Help $command)
         }
@@ -731,13 +734,13 @@ function Get-HelpMessage {
     [-name]          - switch parameter (always optional, only by name)
 
 .EXAMPLE
-    Get-HelpSyntax Get-Command
+    usage Get-Command
 
     Description:
     Displays all ParameterSets for Get-Command with formatted parameters.
 
 .EXAMPLE
-    Get-HelpSyntax ls
+    usage ls
 
     Description:
     Resolves the 'ls' Alias to Get-ChildItem and shows its syntax.
@@ -781,7 +784,7 @@ function Get-HelpSyntax {
         [string]$command,
 
         [Parameter(ValueFromRemainingArguments)]
-        [string[]]$arguments
+        [string[]]$arguments = @()
     )
 
     # Extract from external app
@@ -856,22 +859,22 @@ function Get-HelpSyntax {
     Returns extracted examples.
 
 .EXAMPLE
-    Get-HelpExample Get-Command
+    Get-HelpExample Stop-HiddenScript
 
     Description:
-    Displays all examples for Get-Command.
+    Displays all examples for the function.
 
 .EXAMPLE
-    Get-HelpExample ls
+    Get-HelpExample kills
 
     Description:
-    Resolves the 'ls' Alias to Get-ChildItem and shows its examples.
+    Resolves the 'kills' alias to Stop-HiddenScript and shows it's examples.
 
 .EXAMPLE
     Get-HelpExample gh
 
     Description:
-    Extracts syntax for the gh.exe (GitHub) using 'usage' Alias.
+    Extracts syntax for the gh.exe (GitHub).
 
 .EXAMPLE
     Get-HelpExample gh search
@@ -883,7 +886,7 @@ function Get-HelpSyntax {
     Get-HelpExample "C:\Windows\system32\taskkill.exe"
 
     Description:
-    Extracts syntax for the taskkill.exe using 'usage' Alias.
+    Extracts examples for the taskkill.exe.
 
 .LINK
     Get-Command
@@ -902,31 +905,35 @@ function Get-HelpExample {
 
     param(
         [Parameter(Mandatory, ValueFromPipeline)]
-        $command,
+        [string]$command,
 
         [Parameter(ValueFromRemainingArguments)]
-        [string[]]$arguments
+        [string[]]$arguments = @()
     )
-
-    $help = Get-HelpMessage $command $arguments
-
-    if ($help.examples.example) {
-        $help.examples.example | ForEach {
-            $_.Code.Split("`n") | ForEach {
-                if ($_.StartsWith('PS C:\>')) {
-                    $_.replace('PS C:\>', '')
-                } else {
+    
+    if ((Test-Path $command) -or 
+        (Get-Command $command -CommandType Application -ErrorAction Ignore)) {
+        # Application
+        $help = Get-HelpMessage $command $arguments
+        if ($help -match '(?msix) Examples? (?: :|\r?\n) (.+?) (?: \r?\n \r?\n [A-Z] | \z)') {
+            $matches[1].Trim() -split "`n" | ForEach {
+                if ($_) {
                     $_
                 }
             }
         }
-        return
-    }
-
-    if ($help -match '(?msix) Examples? (?: :|\r?\n) (.+?) (?: \r?\n \r?\n [A-Z] | \z)') {
-        $matches[1].Trim() -split "`n" | ForEach {
-            if ($_) {
-                $_
+    } else {
+        # Function
+        $help = Get-Help $command -full
+        if ($help.examples.example) {
+            $help.examples.example | ForEach {
+                $_.Code.Split("`n") | ForEach {
+                    if ($_.StartsWith('PS C:\>')) {
+                        $_.replace('PS C:\>', '')
+                    } else {
+                        $_
+                    }
+                }
             }
         }
     }
@@ -1142,12 +1149,11 @@ function Stop-HiddenScript {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [ValidateNotNullOrEmpty()]
         [string[]]$names,
 
         [Parameter()]
         [AllowEmptyString()]
-        [string]$launcher = "",
+        [string]$launcher,
 
         [Parameter()]
         [switch]$force,
@@ -1324,7 +1330,6 @@ function Stop-Script {
 
     param (
         [Parameter(Mandatory, ValueFromPipeline)]
-        [ValidateNotNullOrEmpty()]
         [string[]]$names,
 
         [Parameter()]
