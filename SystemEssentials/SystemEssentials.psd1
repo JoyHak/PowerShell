@@ -2,7 +2,6 @@
 RootModule              =  'SystemEssentials.psm1'
 ModuleVersion           =  '1.0.0'
 CompatiblePSEditions    =  @('Desktop', 'Core')
-GUID                    =  'f8deaba5-5c23-43aa-a59f-f508e7369a30'
 Author                  =  'Rafaello'
 CompanyName             =  'ToYu studio'
 Copyright               =  'GNU General Public License v3.0'
@@ -40,6 +39,6 @@ PrivateData = @{
     } 
 }
 PowerShellVersion       =  '7.5'
-RequiredModules         =  @('Microsoft.PowerShell.ConsoleGuiTools', 'ExternalCommand')
+RequiredModules         =  @('Microsoft.PowerShell.ConsoleGuiTools')
 }
 
