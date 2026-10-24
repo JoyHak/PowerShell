@@ -1,15 +1,29 @@
 function Get-WindowsVersion {
-    $regData = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\'
+    Add-Type -TypeDefinition @'
+using System;
+using System.Runtime.InteropServices;
 
-    return [PSCustomObject]@{
-        ProductName     = $regData.ProductName
-        DisplayVersion  = $regData.DisplayVersion
-        EditionID       = $regData.EditionID
-        ReleaseID       = $regData.ReleaseID
-        Build           = "$($regData.CurrentBuild).$($regData.UBR)"
-        BuildBranch     = $regData.BuildBranch
-        InstalledUTC    = ([datetime]"1/1/1601").AddTicks($regData.InstallTime)
-        Computername    = $env:COMPUTERNAME
+public static class WinBrand {
+    [DllImport("winbrand.dll", CharSet = CharSet.Unicode)]
+    public static extern IntPtr BrandingFormatString(string fmt, string win);
+
+    public static string Brand(string fmt, string win) {
+        return Marshal.PtrToStringUni(BrandingFormatString(fmt, win));
+    }
+}
+'@
+
+    $r = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\'
+
+    [PSCustomObject]@{
+        ProductName    = [WinBrand]::Brand("%WINDOWS_LONG%", "%WINDOWS_LONG%")
+        DisplayVersion = $r.DisplayVersion
+        EditionID      = $r.EditionID
+        ReleaseID      = $r.ReleaseID
+        Build          = "$($r.CurrentBuild).$($r.UBR)"
+        BuildBranch    = $r.BuildBranch
+        InstalledUTC   = ([datetime]"1/1/1601").AddTicks($r.InstallTime)
+        Computername   = $env:ComputerName
     }
 }
 
