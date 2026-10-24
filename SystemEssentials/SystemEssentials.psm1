@@ -1733,6 +1733,16 @@ Set-Alias   checkpoints  Get-Checkpoint
     The sequence number of the restore point to restore to.
     If not specified, displays an interactive selection window.
 
+    Type: UInt32
+    Parameter Sets: (All)
+    Aliases:
+
+    Required: True
+    Position: 1
+    Default value: None
+    Accept pipeline input: True
+    Accept wildcard characters: False
+
 .EXAMPLE
     restore 27
     
@@ -1754,15 +1764,28 @@ Set-Alias   checkpoints  Get-Checkpoint
     Out-ConsoleGridView
 #>
 function restore {
+    [CmdletBinding()]
+    
+    [Parameter(Mandatory = $true, ValueFromPipeline)]
     param([uint32]$RestorePoint) 
     
     if (!$RestorePoint) {
         $selection = checkpoints | Out-ConsoleGridView -title 'Restore points' -output single
         $RestorePoint = $selection.ID
+        
+        if (!$RestorePoint) {
+            Write-Host 'Cancel restore' -f DarkGray
+            return
+        }
     }
     
     if ($RestorePoint) {
+        Write-Host 'Init restore, please wait...'
+        checkpoints $RestorePoint
+        
         Restore-Computer $RestorePoint
+    } else {
+        Write-Error 'Restore point not found'
     }
 }
 
