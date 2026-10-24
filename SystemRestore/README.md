@@ -1,3 +1,10 @@
+<a href="https://www.powershellgallery.com/packages/SystemRestore">
+	<img src="https://img.shields.io/powershellgallery/v/SystemRestore?logo=termius&label=PsGallery&color=8293e6" alt="PsGallery">
+</a>
+<a href="https://github.com/JoyHak/PowerShell#installation">
+	<img src="https://img.shields.io/powershellgallery/dt/SystemRestore?style=flat&logo=AB%20download%20manager&logoColor=8293e6&color=8293e6" alt="Installation">
+</a>
+
 # SystemRestore
 
 Backup and restore the system from terminal.

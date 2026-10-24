@@ -1,3 +1,10 @@
+<a href="https://www.powershellgallery.com/packages/SystemEssentials">
+	<img src="https://img.shields.io/powershellgallery/v/SystemEssentials?logo=termius&label=PsGallery&color=8293e6" alt="PsGallery">
+</a>
+<a href="https://github.com/JoyHak/PowerShell#installation">
+	<img src="https://img.shields.io/powershellgallery/dt/SystemEssentials?style=flat&logo=AB%20download%20manager&logoColor=8293e6&color=8293e6" alt="Installation">
+</a>
+
 # SystemEssentials
 
 Designed to simplify essential tasks.
@@ -374,8 +381,8 @@ Write-Log 'Locked file' 'Warning'  <-- writes to warns.log
 
 > [!TIP]
 > Install [Maple Mono font](https://github.com/subframe7536/maple-font) to see pretty prefix.
-> 
-> <img src="../Images/Write-Log.avif" width="450" />  
+>
+> <img src="../Images/Write-Log.avif" width="450" />
 
 ### Write-Detail
 
@@ -535,7 +542,7 @@ Retrieves error descriptions from error code.
 
 | Parameter | Required | Type   | Description                                      |
 | --------- | -------- | ------ | ------------------------------------------------ |
-| `code`    | Yes      | string | Error code   |
+| `code`    | Yes      | string | Error code                                       |
 | `UI`      | No       | switch | Show a Windows dialog with the error description |
 
 <details>

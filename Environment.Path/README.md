@@ -1,3 +1,10 @@
+<a href="https://www.powershellgallery.com/packages/Environment.Path">
+	<img src="https://img.shields.io/powershellgallery/v/Environment.Path?logo=termius&label=PsGallery&color=8293e6" alt="PsGallery">
+</a>
+<a href="https://github.com/JoyHak/PowerShell#installation">
+	<img src="https://img.shields.io/powershellgallery/dt/Environment.Path?style=flat&logo=AB%20download%20manager&logoColor=8293e6&color=8293e6" alt="Installation">
+</a>
+
 # Environment.Path
 
 Manipulate and retrieve `Path` environment variable.
@@ -81,31 +88,42 @@ Adds a folder to the selected scope. Resolves the provided path, normalizes it, 
   <summary>Examples</summary>
 
 Add relative path for current user:
+
 ```powershell
 PS C:\> Set-Location ~
 PS C:\Users\ToYu\> addpath ".\Notepad++"
 C:\Users\ToYu\Notepad++
 ```
+
 Cleanup and add for current user:
+
 ```powershell
 PS C:\Users\ToYu\> addpath '"Notepad++\"'
 C:\Users\ToYu\Notepad++  
 ```
+
 Add any path, even if doesn't exist yet:
+
 ```powershell
 PS C:\> addpath "C:\This\Folder\Does\Not\Exist"
 "C:\This\Folder\Does\Not\Exist"
 ```
+
 Preserves variables:
+
 ```powershell
 PS C:\> addpath %windir%\System32
 %windir%\System32
 ```
+
 Add machine-wide path:
+
 ```powershell
 addpath C:\Users\ToYu\Notepad++ -scope Machine
 ```
+
 Make `git` available for all users:
+
 ```powershell
 Find-EnvPath git -scope User | Add-EnvExe -scope Machine
 ```
@@ -314,22 +332,29 @@ Normalizes a path string for safe use in PATH entries. Trims whitespace, resolve
   <summary>Examples</summary>
 
 Convert relative path to absolute:
+
 ```powershell
 PS C:\> Set-Location ~
 PS C:\Users\ToYu\> Resolve-EnvPath ".\Notepad++"
 C:\Users\ToYu\Notepad++
 ```
+
 Cleanup:
+
 ```powershell
 PS C:\Users\ToYu\> Resolve-EnvPath '"Notepad++\"'
 C:\Users\ToYu\Notepad++  
 ```
+
 Works even if path does not exist:
+
 ```powershell
 PS C:\> Resolve-EnvPath "C:\This\Folder\Does\Not\Exist"
 "C:\This\Folder\Does\Not\Exist"
 ```
+
 Preserves variables:
+
 ```powershell
 PS C:\> Resolve-EnvPath %windir%\System32
 %windir%\System32
@@ -338,6 +363,7 @@ PS C:\> Resolve-EnvPath %windir%\System32
 > [!CAUTION]
 > If variable doesn't exists or empty, this may cause undefined behavior in the future.
 > Use PowerShell notation if you need to expand variable immediately: 
+>
 > ```powershell
 > PS C:\> Resolve-EnvPath "$env:WinDir\System32"
 > C:\Windows\System32
@@ -349,11 +375,11 @@ PS C:\> Resolve-EnvPath %windir%\System32
 
 Sets an environment variable in the selected scope.
 
-| Parameter       | Required | Type   | Description                                                                                |
-| --------------- | -------- | ------ | ------------------------------------------------------------------------------------------ |
-| `name`          | Yes      | string | Name of the environment variable to set or remove                                          |
+| Parameter       | Required | Type   | Description                                                       |
+| --------------- | -------- | ------ | ----------------------------------------------------------------- |
+| `name`          | Yes      | string | Name of the environment variable to set or remove                 |
 | `value`         | No       | object | Value to assign. Use explicit empty string to remove the variable |
-| [scope](#scope) | No       | string | Scope to update in (default: `User`)                                                       |
+| [scope](#scope) | No       | string | Scope to update in (default: `User`)                              |
 
 > [!NOTE]
 > The original .NET implementation of `SetEnvironmentVariable` is slow [because it broadcasts a system-wide environment change via `WM_SETTINGCHANGE`](https://github.com/dotnet/dotnet/blob/ee344f85ef890dd92974e9b93d75906f1f8c39f3/src/runtime/src/libraries/System.Private.CoreLib/src/System/Environment.Windows.cs#L455) and waits for ALL PROCESSES to process it. My function avoids that slow broadcast by reducing timeout to 50ms.
