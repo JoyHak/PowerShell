@@ -1,0 +1,15 @@
+# Ignore everything
+/*
+
+# Modules
+!SystemEssentials/
+!SystemRestore/
+!Environment.Path/
+
+# Metadata
+!Icons/
+!Images/
+!README.md
+!LICENSE
+!.gitignore
+!.github/
