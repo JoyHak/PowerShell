@@ -1136,7 +1136,7 @@ function Get-LineCount {
     tasklist.exe
 
 .LINK
-    taskkill.exe
+    es.exe
 #>
 function Stop-HiddenScript {
     [CmdletBinding()]
@@ -1213,17 +1213,17 @@ function Stop-HiddenScript {
                 Write-Host "$($s.Value)" -f DarkCyan -n
                 Write-Host "'?"
 
-                $response = Read-Host "[Y] Yes  [A] Yes to All  [N] No  [L] No to All  [S] Suspend  [?] Help (default is `"Y`")"
+                $response = Read-Host "[Y] Yes  [A] Yes to All  [N] No  [L] No to All  [P] Pause  [?] Help (default is `"Y`")"
 
                 :AnalyzeResponse switch ($response) {
                     'A' { $confirm = $false; break AskConfirm }
                     'Y' { break AskConfirm }
                     'N' { continue StopScripts }
                     'L' { return $false }
-                    'S' { exit 1 }
+                    'P' { pause }
 
                     default {
-                        Write-Host "Y - Terminate current process.`nA - Terminate all processes without prompting`nN - Skip current process.`nL - Skip all remaining processes.`nS - Pause current operation and return to the command prompt."
+                        Write-Host "Y - Terminate current process.`nA - Terminate all processes without prompting`nN - Skip current process.`nL - Skip all remaining processes.`nP - Pause current operation and return to the command prompt."
                         continue AskConfirm
                     }
                 }
