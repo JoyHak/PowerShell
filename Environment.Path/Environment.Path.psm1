@@ -84,10 +84,6 @@ function Resolve-EnvPath {
     (PATH contains only absolute paths).
     If parameters are omitted, returns all paths.
 
-.NOTES
-    Unlike other functions (like Get-Env*) in this function the path should exist on the disk.
-    Otherwise it returns empty array.
-
 .PARAMETER Path
     Full or relative path or name of the file.
 
