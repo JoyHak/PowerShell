@@ -29,6 +29,17 @@ This collection of functions is designed to simplify the completion of basic tas
 
 # Installation
 
+## Automatic
+
+```powershell
+Install-Module Microsoft.PowerShell.ConsoleGuiTools
+Install-Module SystemRestore
+Install-Module SystemEssentials
+Install-Module Environment.Path
+```
+
+## Manual
+
 TLDR: Clone this repository to `$HOME\Documents\PowerShell\Modules`. Add `Import-Module <ModuleName>` in your profile.
 
 Run the following commands in PowerShell:
