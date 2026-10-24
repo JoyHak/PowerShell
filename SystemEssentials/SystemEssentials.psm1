@@ -1002,40 +1002,46 @@ function Get-Error {
 .OUTPUTS
     PSCustomObject with properties: FullName, LineCount
 #>
-function Get-LineCount {    
+function Get-LineCount {
     [CmdletBinding()]
-    [alias('lines')]
-    
+    [Alias('lines')]
+
     param (
         [Parameter(Mandatory = $false, ValueFromPipeline = $true, Position = 0)]
         [string]
         $Path = ".",
-        
+
         [Parameter(Mandatory = $false)]
         [string]
         $Filter = "*.ahk"
     )
-    
+
     begin {
         $totalLines = 0
         $fileCount  = 0
         $results    = [System.Collections.Generic.List[PSCustomObject]]@()
+        
+        $ErrorAction = if ($PSBoundParameters.ContainsKey('ErrorAction')) {
+            $PSBoundParameters['ErrorAction']
+        } else {
+            'Ignore'
+        }
     }
-    
+
     process {
         $files = Get-ChildItem `
             -Path $Path -Filter $Filter `
-            -ErrorAction SilentlyContinue `
+            -ErrorAction:$ErrorAction `
             -Recurse
-        
+
         if (-not $files) {
             Write-Warning "No $Filter files found in `"$Path`""
             return
         }
-        
+
         foreach ($file in $files) {
-            $content = Get-Content -Path $file.FullName -ErrorAction SilentlyContinue
-            
+            $content = Get-Content -Path $file.FullName -ErrorAction:$ErrorAction
+
             if ($null -eq $content) {
                 $lineCount = 0
             } elseif ($content -is [string]) {
@@ -1043,23 +1049,23 @@ function Get-LineCount {
             } else {
                 $lineCount = $content.Count
             }
-            
+
             $totalLines += $lineCount
             $fileCount++
-            
+
             $results.Add([PSCustomObject]@{
                 FullName  = $file.FullName
                 LineCount = $lineCount
             })
         }
     }
-    
+
     end {
         $results | Format-Table -AutoSize
-        
+
         Write-Output "Total Files: $fileCount"
         Write-Output "Total Lines: $totalLines"
-        
+
         # [PSCustomObject]@{
             # TotalFiles = $fileCount
             # TotalLines = $totalLines
