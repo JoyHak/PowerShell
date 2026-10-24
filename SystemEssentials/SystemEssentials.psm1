@@ -1638,10 +1638,28 @@ function Stop-Script {
     Returns restore points sorted by ID in descending order 
     (newest first) with Description, ID, and Date columns.     
 
+.PARAMETER RestorePoint
+    The sequence number of the restore point.
+    
+    Type: UInt32[]
+    Parameter Sets: (All)
+    Aliases:
+
+    Required: False
+    Position: 1
+    Default value: None
+    Accept pipeline input: True
+    Accept wildcard characters: False
+
 .EXAMPLE
     checkpoints
     
     Lists all restore points, sorted by newest first.
+
+.EXAMPLE
+    checkpoints 12, 13
+    
+    Returns information about restore point with index 12 and 13.
 
 .EXAMPLE
     checkpoints | Where-Object {$_.Description -like '*Update*'}
@@ -1673,8 +1691,20 @@ function Stop-Script {
 .LINK
     Get-ComputerRestorePoint
 #>
-function Get-Checkpoints {
-    Get-ComputerRestorePoint | Select Description, `
+function Get-Checkpoint {
+    [CmdletBinding()]
+    
+    [Parameter(Mandatory = $false, ValueFromPipeline)]
+    param([uint32[]]$RestorePoint)
+    
+    if ($RestorePoint) {
+        $checkpoints = Get-ComputerRestorePoint $RestorePoint
+    } else {
+        Write-Host 'Getting available checkpoints...'
+        $checkpoints = Get-ComputerRestorePoint
+    }
+
+    $checkpoints | Select Description, `
     @{
         Name = "ID";
         Expression = { $_.SequenceNumber }
@@ -1688,7 +1718,7 @@ function Get-Checkpoints {
 }
 
 Set-Alias   checkpoint   Checkpoint-Computer
-Set-Alias   checkpoints  Get-Checkpoints
+Set-Alias   checkpoints  Get-Checkpoint
 
 <#
 .SYNOPSIS
