@@ -13,7 +13,7 @@ You can contribute and get examples here: https://github.com/JoyHak
 HelpInfoURI = 'https://github.com/JoyHak'
 PrivateData = @{
     PSData = @{
-        Tags = 'winver', 'stop', 'script', 'scripts', 'help', 'more', 'table', 'interactive', 'selection', 'checkpoint'
+        Tags = @('winver', 'stop', 'script', 'scripts', 'message', 'help', 'usage', 'examples', 'more', 'learning', 'util', 'utility', 'utilities', 'windows')
 
         # A URL to the license for this module.
         LicenseUri = 'https://github.com/AnderssonPeter/PowerType/blob/main/LICENSE.md'
@@ -39,6 +39,5 @@ PrivateData = @{
     } 
 }
 PowerShellVersion       =  '7.5'
-RequiredModules         =  @('Microsoft.PowerShell.ConsoleGuiTools')
 }
 
